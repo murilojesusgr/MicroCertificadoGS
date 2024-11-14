@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: certs_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  redis:
+    image: redis:latest
+
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+  worker:
+    build: ./worker
+    volumes:
+      - ./pdfs:/app/pdfs
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+volumes:
+  db_data:

@@ -1,0 +1,5 @@
+Flask==2.0.3
+SQLAlchemy==1.4.27
+psycopg2-binary==2.9.2
+werkzeug==2.0.3
+pika==1.2.0
